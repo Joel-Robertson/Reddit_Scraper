@@ -16,6 +16,12 @@ The about URL can be left blank. The radio button should be on the "Script" opti
 
 Step 3)
 Record your 14 character "Personal Use Script" number and your 27 character "Secret" key somewhere safe.
-Use this information to populate the "" block of code in the python scraper.
+Use this information to populate the following code block in the scraper:
 
-Step 4) Open the "" file and run the script.
+reddit = praw.Reddit(client_id='PERSONAL_USE_SCRIPT_14_CHARS', \
+                     client_secret='SECRET_KEY_27_CHARS ', \
+                     user_agent='YOUR_APP_NAME', \
+                     username='YOUR_REDDIT_USER_NAME', \
+                     password='YOUR_REDDIT_LOGIN_PASSWORD')
+
+Step 4) Open the "PY_scraper" file and run the script.
