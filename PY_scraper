@@ -1,0 +1,50 @@
+#! usr/bin/env python3
+import praw
+import pandas as pd
+import datetime as dt
+
+# the next block of code needs to be replaced with information about your reddit account. See the ReadMe for more information
+
+reddit = praw.Reddit(client_id='PERSONAL_USE_SCRIPT_14_CHARS', \
+                     client_secret='SECRET_KEY_27_CHARS ', \
+                     user_agent='YOUR_APP_NAME', \
+                     username='YOUR_REDDIT_USER_NAME', \
+                     password='YOUR_REDDIT_LOGIN_PASSWORD')
+
+# this next line of code is used to specify the subreddit to be scraped. In this example, the "Stocks" subreddit is the target
+subreddit = reddit.subreddit('Stocks')
+
+# this next line of code is used to specify which reddit filter you want to use. Available options are Top, Hot, New, and Controversial
+top_subreddit = subreddit.hot()
+
+# by default top_subreddit returns 100 results. Use this next line of code to change how many results are returned. (10 in this case)
+top_subreddit = subreddit.top(limit=10)
+
+for submission in subreddit.top(limit=1):
+    print(submission.title, submission.id)
+    
+topics_dict = { "title":[], \
+                "score":[], \
+                "id":[], \
+                "comms_num": [], \
+                "created": [], \
+                "body":[]}
+
+for submission in top_subreddit:
+    topics_dict["title"].append(submission.title)
+    topics_dict["score"].append(submission.score)
+    topics_dict["id"].append(submission.id)
+    topics_dict["comms_num"].append(submission.num_comments)
+    topics_dict["created"].append(submission.created)
+    topics_dict["body"].append(submission.selftext)
+    
+topics_data = pd.DataFrame(topics_dict)
+
+def get_date(created):
+    return dt.datetime.fromtimestamp(created)
+
+_timestamp = topics_data["created"].apply(get_date)
+
+topics_data = topics_data.assign(timestamp = _timestamp)
+
+topics_data.to_csv('FILENAME.csv', index=False) 
